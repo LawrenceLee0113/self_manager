@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Title here</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/notion_list.css">
+    <script>
+        var clock_controller = true;
+        var settings = {
+            cancel_event:()=>{
+                console.log("gogogo");
+            },
+            clock_sec_time:1*60,
+            notion_list_items:[
+                "one",
+                "two"
+            ]
+        }
+        
+        var clock_timer = settings.clock_sec_time;
+        function start_clock(){
+            clock_controller = true;
+            setTimeout(()=>{
+                if(clock_controller){
+                    console.log("sec")
+                    {
+                        clock_timer -= 1
+                        $(".clock").html(time_translate(clock_timer)["output_str"]);
+                    }
+                    start_clock();
+                }
+            },1000)
+        }
+        function stop_clock(){
+            clock_controller = false;
+        }
+        function time_translate(sec){
+            let sec_str = ""+Math.abs(sec%60)
+            let minute_str = ""+parseInt(sec/60)
+            if(sec_str.length==1){
+                sec_str = "0"+sec_str
+            }
+            return {minute:minute_str,sec:sec_str,output_str:minute_str+":"+sec_str}
+        }
+        function cancel_click(){
+            settings.cancel_event()
+        }
+        start_clock()
+        $(document).ready(function () {
+            $(".cancel_btn").click(function (e) { 
+                e.preventDefault();
+                cancel_click()
+            });
+            $(".btn_ui div").click(function (e) {
+                let click_num = $(".btn_ui div").index(this)
+                switch (click_num) {
+                    case 0:
+                        $(this).css("display", "none");
+                        $(".btn_ui div:eq(1)").css("display", "flex");
+                        start_clock()
+                        break;
+                    case 1:
+                        stop_clock();
+                        $(this).css("display", "none");
+                        $(".btn_ui div:eq(0)").css("display", "flex");
+                        break;
+                }
+
+            });
+            $(".up_down_btn div").click(function (e) {
+                let click_num = $(".up_down_btn div").index(this)
+                switch (click_num) {
+                    case 0:
+                        $(this).css("display", "none");
+                        $(".up_down_btn div:eq(1)").css("display", "flex");
+                        $(".notion_content_list").show();
+                        break;
+                    case 1:
+                        $(this).css("display", "none");
+                        $(".up_down_btn div:eq(0)").css("display", "flex");
+                        $(".notion_content_list").hide();
+                        break;
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="padding_div">
+
+        </div>
+        <div class="clock">
+            24:56
+        </div>
+        <div class="btn_ui">
+            <div class="start_btn">
+                <span>start</span>
+            </div>
+            <div class="pause_btn">
+                <span>pause</span>
+            </div>
+        </div>
+        <div class="cancel_ui">
+            <div class="cancel_btn">
+                <span>cancel</span>
+            </div>
+        </div>
+        <div class="notion_area">
+            <div class="notion_nav_controller">
+                <div class="hr1">
+                    <hr>
+                </div>
+                <div class="text"><span>notion 事項</span></div>
+                <div class="hr2">
+                    <hr>
+                </div>
+                <div class="up_down_btn">
+                    <div class="down_btn"><img src="../static/imgs/down-filled-triangular-arrow.png" alt=""></div>
+                    <div class="up_btn"><img src="../static/imgs/arrow-up.png" alt=""></div>
+                </div>
+            </div>
+            <div class="notion_content_list">
+                <div class="no_content_text">~沒有notion事項~</div>
+                <!-- <label class="list_container">
+                    <span class="notion_item_text">目前沒有內容喔~</span>
+                    <input type="checkbox">
+                    <span class="checkmark"></span>
+                </label> -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        var notion_item = '<label class="list_container"><input type="checkbox" class="item_checkbox"><span class="notion_item_text">目前沒有內容喔~</span></label>'
+        if(settings.notion_list_items.length == 0){
+            $(".no_content_text").show();
+        }else{
+            for(let i of settings.notion_list_items){
+                var a = $(notion_item)
+                $(a).children(".notion_item_text").html(i)
+                $(".notion_content_list").append(a);
+
+        }
+        }
+    </script>
+</body>
+
+</html>     
