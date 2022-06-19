@@ -1,2 +1,2 @@
 new branch push 1
-push new branch push 2 
+error by message push new branch
